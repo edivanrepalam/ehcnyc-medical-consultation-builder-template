@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medical Consultation Builder | Elite Health Center NYC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#092e39;
+  --navy-2:#134656;
+  --blue:#8bcbdd;
+  --accent:#2a8ea8;
+  --ink:#0f2c36;
+  --muted:#58727e;
+  --danger:#c2413b;
+  --glass:rgba(255,255,255,.44);
+  --glass-strong:rgba(255,255,255,.62);
+  --glass-edge:rgba(255,255,255,.72);
+  --glass-shadow:0 12px 40px rgba(9,46,57,.10),inset 0 1px 0 rgba(255,255,255,.9);
+  --blur:blur(22px) saturate(170%);
+}
+*{box-sizing:border-box}
+html{background:#e2eef2}
+body{margin:0;min-height:100vh;font-family:'Onest',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 12% 18%,rgba(139,203,221,.85),transparent 70%),
+  radial-gradient(30% 28% at 88% 12%,rgba(42,142,168,.38),transparent 70%),
+  radial-gradient(42% 38% at 78% 82%,rgba(139,203,221,.7),transparent 70%),
+  radial-gradient(30% 30% at 18% 88%,rgba(9,46,57,.20),transparent 70%),
+  radial-gradient(26% 24% at 50% 50%,rgba(255,255,255,.7),transparent 70%),
+  linear-gradient(160deg,#eaf4f7,#d9e9ef)}
+button{font:inherit}
+:focus-visible{outline:3px solid rgba(42,142,168,.5);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.glass{background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .glass{background:rgba(255,255,255,.86)}
+}
+
+/* Top bar */
+.topbar{position:sticky;top:12px;z-index:20;margin:14px 28px 0;border-radius:20px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.brand-logo{height:38px;width:auto;display:block}
+.brand-divider{width:1px;height:34px;background:linear-gradient(180deg,transparent,rgba(9,46,57,.25),transparent)}
+.brand h1{margin:0;font-size:17px;font-weight:700;color:var(--navy);letter-spacing:-.01em}
+.brand p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.order-chip{font-size:13px;font-weight:700;color:var(--navy);background:rgba(139,203,221,.35);border:1px solid rgba(255,255,255,.8);padding:8px 14px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}
+@media (max-width:640px){
+  .topbar{margin:10px 12px 0;padding:12px 14px}
+  .brand-logo{height:28px}
+  .brand-divider,.brand div:last-child{display:none}
+}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:28px;padding:26px 28px 40px;max-width:1440px;margin:0 auto;align-items:start}
+@media (max-width:1100px){.layout{grid-template-columns:1fr;padding:18px 12px 32px}}
+
+.card{border-radius:22px;padding:22px 22px 24px;margin-bottom:24px}
+.card-head{display:flex;align-items:center;gap:10px;margin:0 0 18px}
+.card-head h2{margin:0;font-size:16px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:10px}
+.card-head h2::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(139,203,221,.3)}
+.count{margin-left:auto;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);color:var(--accent);font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.span-3{grid-column:1/-1}
+@media (max-width:640px){.grid{grid-template-columns:1fr}.span-3{grid-column:auto}}
+
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:0 0 7px 3px}
+.field label .req{color:var(--danger)}
+.field input,.field select,.field textarea{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:rgba(255,255,255,.58);border:1px solid rgba(9,46,57,.09);border-radius:12px;padding:11px 13px;outline:none;box-shadow:inset 0 1px 2px rgba(9,46,57,.05);transition:border-color .15s,box-shadow .15s,background-color .15s}
+.field textarea{resize:vertical;min-height:74px;line-height:1.45}
+.field select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:36px;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2358727e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center}
+.field input:hover,.field select:hover,.field textarea:hover{background-color:rgba(255,255,255,.72)}
+.field input:focus,.field select:focus,.field textarea:focus{background-color:rgba(255,255,255,.9);border-color:var(--accent);box-shadow:0 0 0 4px rgba(139,203,221,.45)}
+.field input::placeholder,.field textarea::placeholder{color:#93a7b0}
+.field input:disabled,.field select:disabled{opacity:.4;cursor:not-allowed}
+.field.invalid input,.field.invalid select{border-color:var(--danger);box-shadow:0 0 0 3px rgba(194,65,59,.15)}
+.money{position:relative}
+.money span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14.5px;pointer-events:none}
+.money input{padding-left:28px}
+.help{font-size:12px;color:var(--muted);margin:7px 3px 0;line-height:1.45}
+
+/* Line items */
+.item{position:relative;background:rgba(255,255,255,.34);border:1px solid rgba(255,255,255,.75);border-radius:16px;padding:14px 16px 18px 20px;margin-bottom:16px;box-shadow:0 4px 18px rgba(9,46,57,.06);overflow:hidden}
+.item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--blue),var(--accent))}
+.item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.item-title{font-weight:700;font-size:14.5px;color:var(--navy)}
+.item-actions{display:flex;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);color:var(--muted);cursor:pointer;transition:color .15s,background-color .15s}
+.icon-btn:hover{background:rgba(255,255,255,.9);color:var(--accent)}
+.icon-btn.danger:hover{color:var(--danger)}
+
+/* Buttons */
+.btn{border-radius:13px;padding:11px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--navy);background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);box-shadow:0 4px 14px rgba(9,46,57,.07);transition:background-color .15s,transform .08s}
+.btn:hover{background:rgba(255,255,255,.85)}
+.btn:active{transform:scale(.98)}
+.btn-primary{color:#fff;border-color:rgba(255,255,255,.25);background:linear-gradient(135deg,var(--navy-2),var(--navy));box-shadow:0 8px 22px rgba(9,46,57,.28),inset 0 1px 0 rgba(255,255,255,.22)}
+.btn-primary:hover{background:linear-gradient(135deg,#1a5667,var(--navy))}
+.btn-add{width:100%;justify-content:center;border:1.5px dashed rgba(42,142,168,.45);background:rgba(255,255,255,.25);box-shadow:none;color:var(--accent);padding:14px}
+.btn-add:hover{background:rgba(255,255,255,.55)}
+
+/* Preview */
+.preview-col{position:sticky;top:100px}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.screen{border-radius:24px;padding:12px}
+.screen-bar{display:flex;align-items:center;gap:7px;padding:2px 4px 12px}
+.screen-bar i{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.8);border:1px solid rgba(9,46,57,.12)}
+.screen-bar span{margin-left:6px;font-size:12.5px;color:var(--muted);font-weight:600}
+.device{display:inline-flex;margin-left:auto;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.8);border-radius:11px;padding:3px}
+.device button{border:0;background:transparent;font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;color:var(--muted);cursor:pointer}
+.device button.on{background:rgba(255,255,255,.95);color:var(--navy);box-shadow:0 2px 8px rgba(9,46,57,.1)}
+.frame-wrap{border-radius:16px;overflow:hidden;display:flex;justify-content:center;background:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.7)}
+#preview{border:0;width:100%;height:calc(100vh - 230px);min-height:540px;display:block;background:#e3f0f5;transition:width .2s}
+@media (max-width:1100px){.preview-col{position:static}#preview{height:760px}}
+
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,16px);color:var(--navy);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:92vw;text-align:center;background:rgba(255,255,255,.75)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.bad{color:#fff;background:rgba(194,65,59,.9)}
+
+/* Order summary v6 extras */
+.span-2{grid-column:span 2}
+@media (max-width:640px){.span-2{grid-column:auto}}
+.help.center{text-align:center;margin-top:10px}
+.field label .sub{font-weight:500;color:#8aa0aa}
+.field label.pharmacy-label{display:flex;justify-content:flex-start;align-items:center;gap:4px}
+.field textarea.two-line{min-height:0;height:auto;resize:none}
+.field input.calc{background:rgba(139,203,221,.22);border-color:rgba(42,142,168,.3);color:var(--muted);font-weight:700;cursor:default;box-shadow:none}
+.field input.calc:focus{box-shadow:0 0 0 3px rgba(139,203,221,.35)}
+.field.hl label{color:var(--accent)}
+.field.hl input{background:rgba(139,203,221,.32);border-color:rgba(42,142,168,.55);font-weight:700}
+/* product block: accent edge as inset shadow so dropdown menus aren't clipped */
+.item{overflow:visible;padding-bottom:22px;box-shadow:inset 4px 0 0 #6fbdd2,0 4px 18px rgba(9,46,57,.06)}
+.item::before{display:none}
+.item-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ph-badge{font-size:11.5px;font-weight:700;color:var(--accent);background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.95);padding:3px 10px;border-radius:999px}
+.sub-head{margin:22px 0 12px;padding-top:16px;border-top:1px solid rgba(9,46,57,.09);font-size:13px;font-weight:700;color:var(--accent)}
+.sub-head.first{margin-top:4px;padding-top:0;border-top:0}
+/* Keep supplies on the third row of the product grid. */
+.item .supplies-field{grid-column:1}
+.field[hidden]{display:none}
+/* Editable units dropdown: always show the full list. */
+.card.units-open{position:relative;z-index:7}
+.units-combo{position:relative}
+.field .units-combo input{padding-right:42px}
+.units-toggle{position:absolute;right:4px;top:4px;bottom:4px;width:32px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+.units-toggle:hover:not(:disabled){background:rgba(139,203,221,.25)}
+.units-toggle:disabled{opacity:.4;cursor:not-allowed}
+.units-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;max-height:240px;overflow-y:auto;overscroll-behavior:contain;padding:6px;border-radius:12px;background:rgba(255,255,255,.97)}
+.units-menu[hidden]{display:none}
+.units-combo.opens-up .units-menu{top:auto;bottom:calc(100% + 6px)}
+.units-option{display:block;width:100%;padding:9px 10px;border:0;border-radius:8px;background:transparent;text-align:left;font:inherit;font-size:14px;color:var(--ink);cursor:pointer}
+.units-option:hover,.units-option.is-active{background:rgba(139,203,221,.3)}
+.units-option[aria-selected=true]{font-weight:700;color:var(--accent)}
+/* multi-select dropdown */
+.card.menu-open{position:relative;z-index:6}
+.multi{position:relative}
+.multi-btn{display:block;width:100%;font:inherit;font-size:14.5px;color:var(--ink);text-align:left;background:rgba(255,255,255,.58) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2358727e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 13px center;border:1px solid rgba(9,46,57,.09);border-radius:12px;padding:11px 36px 11px 13px;cursor:pointer;box-shadow:inset 0 1px 2px rgba(9,46,57,.05);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:border-color .15s,box-shadow .15s,background-color .15s}
+.multi-btn:hover{background-color:rgba(255,255,255,.72)}
+.multi-btn[aria-expanded=true]{background-color:rgba(255,255,255,.9);border-color:var(--accent);box-shadow:0 0 0 4px rgba(139,203,221,.45)}
+.multi-val.empty{color:#93a7b0}
+.multi-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;min-width:190px;border-radius:14px;padding:6px;background:rgba(255,255,255,.94)}
+.multi-menu[hidden]{display:none}
+#medMulti .multi-menu{right:auto;width:max-content;min-width:100%;max-width:min(400px,90vw)}
+.field .multi-opt{display:flex;align-items:center;gap:10px;margin:0;padding:9px 10px;border-radius:9px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.field .multi-opt:hover{background:rgba(139,203,221,.25)}
+.field .multi-opt input{width:17px;height:17px;flex:none;margin:0;padding:0;border:0;background:none;box-shadow:none;accent-color:var(--navy);cursor:pointer}
+/* delivery dates */
+/* extra links */
+.link-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) auto;gap:12px;align-items:end;margin-top:16px}
+.link-row .icon-btn{margin-bottom:3px}
+@media (max-width:640px){.link-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="topbar glass">
+  <div class="brand">
+    <img class="brand-logo" alt="EHCNYC Elite Health Center NYC">
+    <div class="brand-divider"></div>
+    <div>
+      <h1>Medical consultation</h1>
+      <p>Internal use</p>
+    </div>
+  </div>
+  <div class="order-chip" id="chipOrder">New consultation</div>
+</header>
+
+<main class="layout">
+  <section class="form-col">
+
+    <div class="card glass">
+      <div class="card-head"><h2>Consultation details</h2></div>
+      <div class="grid">
+        <div class="field"><label>Patient name <span class="req">*</span></label><input data-k="name" placeholder="Last, First" autocomplete="off"></div>
+        <div class="field"><label>Medical consultation date <span class="req">*</span></label><input data-k="consultDate" placeholder="e.g. Tuesday, Sep 29, 2026"></div>
+        <div class="field"><label>Consultation status</label><select data-k="status" data-opts="statusLabels" data-ph="Select"></select></div>
+        <div class="field"><label>Provider will call you between <span class="req">*</span></label><input data-k="callWindow" placeholder="e.g. 10am and 12pm ET"></div>
+        <div class="field"><label>Provider name <span class="req">*</span></label><select data-k="provider" data-opts="providers" data-ph="Select doctor"></select></div>
+        <div class="field"><label>Consultation fee (paid)</label><select data-k="fee" data-opts="fees" data-ph="Select"></select></div>
+        <div class="field" id="balanceField" hidden><label>Balance due <span class="req">*</span></label><select data-k="balance" data-opts="fees" data-ph="Select"></select></div>
+        <div class="field span-3" id="medField"><label>Medication/Other</label>
+          <div class="multi" id="medMulti">
+            <button type="button" class="multi-btn" aria-haspopup="true" aria-expanded="false"><span class="multi-val">Select</span></button>
+            <div class="multi-menu glass" role="group" aria-label="Medication/Other" hidden></div>
+          </div>
+        </div>
+        <div class="field span-3"><label>Once you have been medically cleared</label>
+          <div class="multi" id="clearMulti" data-summary="count">
+            <button type="button" class="multi-btn" aria-haspopup="true" aria-expanded="false"><span class="multi-val">Select</span></button>
+            <div class="multi-menu glass" role="group" aria-label="Once you have been medically cleared " hidden></div>
+          </div>
+        </div>
+        <div class="field span-3"><label>Comments</label><textarea data-k="comments" placeholder="Anything the patient should know about this consultation (optional)"></textarea></div>
+      </div>
+    </div>
+
+  </section>
+
+  <aside class="preview-col">
+    <div class="toolbar">
+      <button type="button" class="btn btn-primary" id="copyGmail">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy for Gmail
+      </button>
+      <button type="button" class="btn" id="copyCode" title="Copy raw HTML for n8n, GHL, etc.">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+        Copy HTML
+      </button>
+      <button type="button" class="btn" id="download" title="Download .html" aria-label="Download .html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      </button>
+      <button type="button" class="btn" id="reset" title="Clear form" aria-label="Clear form">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></svg>
+      </button>
+    </div>
+    <div class="screen glass">
+      <div class="screen-bar">
+        <i></i><i></i><i></i><span>Email preview</span>
+        <div class="device" role="group" aria-label="Preview width">
+          <button type="button" class="on" data-w="100%">Desktop</button>
+          <button type="button" data-w="390px">Mobile</button>
+        </div>
+      </div>
+      <div class="frame-wrap"><iframe id="preview" title="Email preview"></iframe></div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast glass" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   CONFIG: edit the doctor list, signature and notice here
+   ============================================================ */
+const CONFIG = {
+  clinicName: 'Elite Health Center NYC',
+  tagline: "New York's Premier Online Weight Loss Clinic",
+  logoData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAABaCAMAAACi/jz1AAAAwFBMVEUAbNkAqvAAkLYASCQAbbYAqlUA/wAAAAAAJjEAjLMAJy4AJTEAJjEAJTEAAFUAJTEAJjAAi7MA//8ANzcAi7QAJTEAf38Aia8AqqoAjLMAHTkAf7QAHh4AAP8Af/8AkrUAVVUAAH8AADsAVaoAl8wAmZkAkbcAHy8AVQAAfwAAf50AKUYAPQ4AjMQAv78AZpkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSiv+AAAAMHRSTlMFBFEHBwMBAPZzD9EvrQORUU4BBTJxAhQDgQoGCAECEQMCBAMJBSgiAwIKCQYOBAX/xjKNAAAPJklEQVR42u2dh5bjqBJAvfsCMkEgIWSNsztN3Nn//7tHUKaQUNs97tnXnN05bQkRrspFURR4lS5JyKYH6CKYztE5USqU4pwRQhhjXFEcyHfIy7yXyjxY4mGQMS/1peGzJk20yMs8qivPX4oiy7L1eq3/zYrNLj8MMlChk6RU/4nFiixICUcY7XkyvChCLcWjnIQGMm6x4CQZJcaEDztHxXqYsgKVMKdxzgJ5D+vHN6HWrzIvc4GOzd1dVfj3dWNO3cuQnCWESZLobrBklSxJTIOWfHQxDJqNcoKgsVQkVJ+icg70er2BSZcjEJ/MG4HggVINVZShyt08Pvs3uzd37LpmRMtIokzuDxqryRo5TWf7X6FI0Du08cnsDiDo0xp4J/aNlruX9VTKNuUANGNGtu8MegazlWo8A1pLWiToqgIeB0X6CMh+LdCnYj2Xil2tPCxoRWgi7gv6QZCISvuqHQQNKw8I9AFVGfC0P44Cop+5SjbrmORQW9CJUgnHdwUdIc6OtNhOg852kRKtWQEE8+P42eoIvI9Sg94V67hUVOiCJDMSLX4QcVfQ3u0I9QGDBpUHCFr/FzEelqGRcJetY5MZOaQxUsUPJIx5dy/QaZTaaMfE7STodeFbxDDoMgdE+mk0HuY7v4Zv2hA/rRekYvg1uxPoFIlFFSdqPwlaK9o8CrQe5oqQOTEl0C95FameA6TvJdGULANd1xIEna3iJNoUAY2Hh7mRsFqiN9oZ0t1BL9DPA9sjCHpdlJGgyxLgeOyNh487aCT0yotQ05vD4ZWg+Y1Ay8WcNWk8CdpTHiHQ6HHamC7B2+gp+7RenDZ3luiUJ69ISk6CHtt4QdDQTDx7akHnT/5ddCyLV3Duf81Wvi9nIikkbwBahgZCwrhSyrjwQiI9AVpbHpGg8+MpPB5CAr0pgwOhcdu9GB8erFhOrfJfTUzD4HQ9aAxzZK21jCmHsnA8CXo4pE2ABifYp7L2wp6AkfCAYI5Z0SiHzQZE3TkHfdD77T6UtvImoCGBJty6bTGW+n9jlUCoqe7xBOjsFCfRxi+U+SJdOQXu83qGxs+GYlU9Hh8r8+ymAEU6LNHpG0s0JNBEF7LvXKIpBgxAI/HlFOihPTUFOgdUwcnJ+gka0Z4Dtf1xzNv1CF34JvMk/uf9QKcCtN3wsNoHjCgbY57W0SMbbwo0NBPPTlrxVDtgJMzzgCdrtOLyOCD9SWP+d9jqeHvQgEAzih6A53ukuakEz4JeP0WCRscNNB6W6AVQHOBUZYOOwGpBa7FozC87o4nuB5r68ixBzg9NVmIwS4nmJXqd/RUJGlD22bcyP2WQOtqt52btrQ1+6lbY0OF4uKNEpwqYXT/ANWHeYMZy2qnUAWg7Nw0a5ReIaQFZHGURyRkdyqeiwVwdJ51KhAZ6bT1BMGgMpj0GQfuaQ30/B9bQdWaiaCPNUaA75TEDGkHDni/Qp6Nf0vpTVgVW33Ojpo3Ndxwrlre0oxEIGjDaZLAEOsAcA7qdIM6CBsQXVByAhQIp6CZtTkay/UV1z87CNJjwHgLNeCgRH/QX5Tv1z5PxHrOLswEbbxZ0jmbdRJk13wpPoHdhzgcTEAJFL/gTNBKagBOGtfqQr3JUNKC3zP8KTYBOz/NRAAFPzrxEzzvybVGXYiK+A9AesFJZLXSgXQv6O1usq2ZAZ4Hl/gjQc2/NrZD9J5tfZZhPvxq0Nxbyac0xH6m0CSiPCNCANQdM6T0rGlwLfnegfdtOXgcach+XkRI9vTpV66CnSNvunw4a8B+v/4gFPTUeZiFNPqmi3wtouniCNCvR0BLfLhJ0vplfHtn9lhItrhoLQdDPFbj2FCfR4fGwaKaYT5FRle8bNLse9Apy+vwdCzq0tp09Bl/FbwH6DVRHmYPKo4oDHTKm25BQSEf/Xw6GutdHUHlEgoaVR28NYfcBugvyfAYWAWNBQ8qjvyq2+y2tjq3n6rhaR5d9P3B4yhgEDRnT/bnfbnLF7PeZGcobgEZlOesDCYMGpvWXfgxv5q8uHK4HPRXWwTHkvTOxGHAiEU4lRm8BGtyeEg365C/U5hOgb+LrIBSHk4T90eezBBKWW8Afjbkv5ukNQINqOhb0ZpLkobiF7nhLx/93yPEvgLCYW4Au51xxrwYNrS4u1x2/fM1wmywQ6TMVaaxEV3n2RqC/reNF+oA2xeFdgPYDdidEWmfmFMeBRuiP7G1A+0o62wW09MGsGWabv98BaKkCMeZQUm64lFGgZ5TH60HDcbyTFszL/UEDq7OBErrtF0RESfTjJOkrQO/WkaTzzoAZK5A7gGZQpBK4BN5fM07nQaP8MXsb0H8CkTo5pDj609HhHoQ7BDnS6T2bEGeTJRB71wc9qTyuAA0uxBTzBRXPdwUN7V8hYjxBxN72OIN6GvQk6WtA/8zgPZuzqwjF6lfY0aH4aAru2hhYFxjcTUQBkgPQYHjzDUCjQHx0f5W2AnfVFhMBNNvw1HB/m4h/2FvChZmVpul2C2M2duAcaC1W2VuA3gUj/ndVlee7591fWWj/bCiAZiqp22wWokGvFedKMRb2SeVzoOFY5qtBTyyXZ1lRZH/ObhW7y64s/CoHoEARoMH9KTcA/Ry7236oOH6+zk16sw2d21eQ5jgKNCqP2RuAhsfDudC9b1059wF92S8nTVEc6JDyuBI0elxOul/MfUCnl+V7wb9Egg5FiV4J+pBvfse94Gl4QJzacx8FGpWr7A0kOl98ugF6B6DRwvMNBFoAGoHK41rQLpp/CefyfYBesviomulqHGgwhOBq0LqiXfFazncE/YAmDrwb7/ZMF0k0uIJ4PWh0iYmDD8R+3Pc4NhFznASjCKNloCEb7wagzRuMUh/ZxqvrrqA1PzWHWs9GUZzjf6hQX94EtCmiyCKGweqquI6bHYzSqmmjP6ZQEz1NkbFLWTORzzcBbSL98mJuo0CVXxdAoyV674NW0aCBV6JR7xWDdTWxgSR4cnH2Uwh0WUVHKvlxHZOBG8fLhFRnJpjsEVqcZUuSORjlLEYXg47VrYrJaQSWqjFswpg9WEL6JtYwBSMO82KU8yUYmzguM5uJkDk+mkMjBrA/1YekGMzgsyt0/+TicqiJbeKc2W2Lyh1pjNE7TXYjdHkqiqJ9nYU7JKUKvKLVKw7qvsQev31BkTlTiTuXf4Mf3q6VRx+1XcafyY3ic7ZPlK0i2rWbdasyGFizejdCkkpz+Exq9so20WfvPeXHY1UZEc7zqnosJ1/QCn2ka9MhJj7sA/QvSh+gP0B/gP5IrwI9tr1GRlV93TfSgjZbd6UtCjLwhk+m/RteVVC2gSWeQs+Hnx7X4LUvbI2mPhmwdalM/2kSXdvgb2AQRhqZEjBVvRur7sAZdxkPI4ao+/ilfw6NufCVjp5ra+0utEV1eQf5MLo0Exva1VrSUdFl1yQK/OAQtq3sbuBhQ83n7k49CR01aDt6RLYfxgy3TZa2yV3xLSzXJDFs64o3wTHMXpeKqF7xmJH6sLouCSR1Naz5yLdD0Iw0WweVC7eVqK2DyM4PQoiSrUjw7sN28FNErioXECgRI4BfSjCS6OarrStK9cJ97G0X96PvUGK8LaW50ibbaTp45Nx2jovxTFffUbWW4DWZ5or5i9ffAcpMm1j/l01WpAlOcqD3PFE9FwOufZu29y6OiQn0kNoVv7ptQyHDJGneFHeOPWwOser3y/XNxvldUJOjjfvf96qidhnX/DZParMBvxe1VXYrWRP4IU3weisRFrT+/PnhrO8IG1mYOtB1Lge6fUTZIoT77HkmXbeF+7Nui3FmWrxfReOe3JuVI2K8ZD032sp00SXX5xFo0oSAYkx5wvS32JTqeo8/d8/1nxA+aE77lRhpTxjXGZuvGu/9rg1QFQ2CNkFPSuekylExoBntbSKz0ez8X7IFbSv4jJmusWkQbTajUfeuhK5RZxF85EJPG/mQ+k9Wt0WyhNVvS7nhX5gfRNpqLUOSTrI0aDVqOAi6htOvEXaPwqCV76oWKuFfUQt6uJPFqyoEuhUjpFQj0WyUg5gvWQ+0Tf020YTI/tgmklbSlQeaaBlA5w50nUv3iBk3mM1TSw3l3S/IGNBbm/AcaKys47/rvXtOeqBVfcBgHzS2eff9rtH2lXigbVW4q6oJcfVAm91E8ovtXzPQ60e3/cpEwpRZ3932QT+MQeOuM1Z10Fo98DFoovWCHk/OHWj7XrBopP+szJuQaOTmXSDR495PSDSakegfVux4c9kDLQNVeaBp0uof1IEeSTTTnWL2rJAWdDoCzUYSndBUvwwMSTS1SPc90GejPNqYCF0ZBxzpGnRjddiRaQHoZvyQYxnrfuqwBd1cqTN9tsSE6f4lBnRboA96tEUBGgxZ/W2eAN090ijz/2Jp1uh9HU3r19aBts/r71HZDPPQiQ2rdl2POD0YDxreJjhYKOysjjr1pAxbRW2bNAs6sOxoAssYHk0e1CivAe1U+RTotsHYDYaN1fHVAy2svsJ90HbApW2TQqBVjNUBKk4MWx0KuzG8b3UM8pohH301uoOfo1SHqG0CAkq0HKuO2urYtqAvWnESSsOgSc8qsqCdDFGEANDmvhiAxkaZp2hGon+9jtYdU0IIbcS5Nl2lo5UPeqyj9VUjhRMSTfBYR2OaDEfCDrT8Yey+PmhJutL6BNMbgX4IgcYe6JFNMVYus6AfYPNuy1vdgS+d1TEGnZppYcJINGjzWXg7pxrQF/PayFCiVc80JcABwiBoGQn6EG9Hl8Ms7qBZ3Vg7d7ITFjkJOmRHN3J3QNzes6C/e6CR2+68QKKdZfwFBF2PGwHQ5jnDxngDeH/CwoVLsjFO3Ec8B1qJXsYZ0KzO62wO3WG5NWd6CJfZgGa9DAtAG35MUGosBGGtaWM0u0QHoM3PGYVB9x6pQdfDGgS6HnJh0M5MUgKbJinI6sDNlLa34RAn81bHNgJ0k3D9xpvphfNx9HLQpaBl+5MLamx1qAFo89sMs1YH709YdAfIGQSN0BcWlOjeXlTVKdeVqg/VZu5wI6zcudu15wnzznzSdmWnVWhzGDcb7XnFiteW7VfFav+Lao/uxlav8joONzXFWMeaaDLQpirRLhu4PM7JBwU7UW5dZc2dtqi6LMrcbyGmXUH2m9BzzVHWdqbO2PR+bHd0VzSo7p4cZbS/c04G1/4H9zeFQx68tZoAAAAASUVORK5CYII=',
+  logoUrl: '',            // hosted https logo; overrides logoData in the email when set
+  heroData: 'data:image/jpeg;base64,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',
+  heroUrl: '',            // hosted https photo; overrides heroData in the email when set
+  providers: ['Dr. Colantonio', 'Dr. Paukman', 'Dr. Mastrovitch'],
+  consultStatuses: [      // bg / text colors for the status label in the email
+    { label: 'Scheduled', bg: '#e2f5ea', fg: '#1d7446' },
+    { label: 'Awaiting payment', bg: '#fdf1dc', fg: '#935c07' },
+    { label: 'Awaiting confirmation', bg: '#e1f2f7', fg: '#1f7489' }
+  ],
+  fees: ['$45', '$60', '$200', '$100'],   // used by Consultation fee (paid) and Balance due
+  // Balance due -> Stripe payment link for the "Click here to remit payment" button
+  paymentLinks: {
+    '$45': 'https://buy.stripe.com/9B628r6Wn7Vqg29dt9cIE2R',
+    '$60': 'https://buy.stripe.com/9B66oH6Wn6Rm5nv88PcIE3W',
+    '$200': 'https://buy.stripe.com/cNi28rbcDcbG5nvagXcIH32',
+    '$100': 'https://buy.stripe.com/5kQ4gz2G78ZuaHPdt9cIH33'
+  },
+  awaitingPaymentStatus: 'Awaiting payment',   // this status makes Balance due required
+  awaitingConfirmationStatus: 'Awaiting confirmation',   // this status adds the "Reply to confirm" button
+  // Opening line of the email by Consultation status (\n = line break)
+  statusIntro: {
+    'Scheduled': 'Your medical consultation has been scheduled.\nPlease find the details below:',
+    'Awaiting payment': 'Please find the link below the balance due to remit payment for your medical consultation.',
+    'Awaiting confirmation': 'Please confirm your scheduled consultation by replying to this email.'
+  },
+  defaultIntro: 'Please find the details of your medical consultation below:',   // when no status is selected
+  // Reply-by-email confirmation: the button opens a pre-written reply to signature.email
+  confirmReply: {
+    button: 'Reply to confirm',
+    title: 'Confirm in one tap',
+    note: 'Click the button below. It will open up a pre-written reply to confirm your medical consultation and acknowledgement of our Medical Consultation Policy. Feel free to add additional comments in the email before sending.',
+    footNote: 'Replying acknowledges the Medical Consultation Policy above.',
+    subject: 'Confirmed: Medical Consultation - {name} - {date}',
+    body: 'I, {name}, acknowledge the Medical Consultation Policy and confirm my consultation on {date}.'
+  },
+  medications: [
+    'Compounded Tirzepatide/Glycine/B12',
+    'Compounded Semaglutide/Glycine/B12',
+    'Compounded Tirzepatide ODT',
+    'Compounded Semaglutide ODT',
+    'Zepbound',
+    'Mounjaro',
+    'Wegovy',
+    'Ozempic',
+    'Sermorelin'
+  ],
+  policy: {
+    title: 'Medical Consultation Policy',
+    paragraphs: [
+      'Dear Patient,',
+      'We want to make the most of your consultation time!',
+      'Please keep an eye out for a call and/or text message from our provider during your scheduled consultation window &mdash; this window has been reserved exclusively for you.',
+      'Should you need to cancel, please notify us at least three (3) hours before the window of your appointment.',
+      'Refunds will <em>not</em> be issued if you were not medically cleared.',
+      '<em>Thank you for your understanding and cooperation.</em>'
+    ],
+    signoff: 'Elite Health Center NYC Team'
+  },
+  afterClearance: [
+    'The provider will send a prescription to the pharmacy.',
+    'We will contact you to discuss your program/options for treatment.',
+    'We will place your order on hold for a future ship date.',
+    'Your order will be released for fulfillment.',
+    'Please call your local pharmacy to verify when your medication is ready for pick up.'
+  ],
+  signature: {
+    rating: '4.9',
+    address: ['245 Fifth Avenue Third Floor', 'New York, NY 10016'],
+    team: 'Patient Support Team',
+    hours: ['Mon-Thur: 9am to 7pm ET', 'Fri: 9am to 5pm ET'],
+    phone: '(917) 408-6103',
+    email: 'support@elitehealthcenter.com',
+    website: 'www.elitehealthcenternyc.com'
+  },
+  confidentiality: 'The information contained in this e-mail and any attachments may be legally privileged and confidential. If you are not an intended recipient, you are hereby notified that any dissemination, distribution, or copying of this e-mail is strictly prohibited. If you have received this e-mail in error, please notify the sender and permanently delete the e-mail and any attachments immediately. You should not retain, copy or use this e-mail or any attachment for any purpose, nor disclose all or any part of the contents to any other person.'
+};
+CONFIG.statusLabels = CONFIG.consultStatuses.map(x => x.label);
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nl2br = v => esc(v).replace(/\r?\n/g, '<br>');
+const safeUrl = u => (/^https?:\/\/\S+$/i.test(u || '') ? u : '');
+const parseISO = v => new Date(v + 'T00:00:00');
+const fmtDate = v => {
+  if (!v) return '';
+  const d = parseISO(v);
+  return isNaN(d) ? v : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+const fmtMonth = v => { // "2027-03" -> "Mar 2027"
+  if (!v) return '';
+  const d = new Date(v + '-01T00:00:00');
+  return isNaN(d) ? v : d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+};
+const fmtMoney = v => {
+  if (v === '') return '';
+  const n = Number(v);
+  return isNaN(n) ? v : '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+const todayISO = () => {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+};
+const joinList = a => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]);
+function fillSelect(sel, list, ph) {
+  sel.innerHTML = (ph !== undefined ? `<option value="">${esc(ph)}</option>` : '') +
+    list.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+}
+const fmtLongDate = v => { // "2026-09-29" -> "Tuesday, Sep 29, 2026"
+  if (!v) return '';
+  const d = parseISO(v);
+  return isNaN(d) ? v : d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+/* ---------- form ---------- */
+function applyDefaults() {
+  $$('[data-k]').forEach(el => { el.value = ''; });
+  $$('select[data-opts]').forEach(sel => fillSelect(sel, CONFIG[sel.dataset.opts], sel.dataset.ph));
+  $$('.field.invalid').forEach(f => f.classList.remove('invalid'));
+  [['#medMulti', CONFIG.medications], ['#clearMulti', CONFIG.afterClearance]].forEach(([sel, list]) => {
+    const multi = $(sel);
+    $('.multi-menu', multi).innerHTML = list.map(v =>
+      `<label class="multi-opt"><input type="checkbox" value="${esc(v)}"><span>${esc(v)}</span></label>`).join('');
+    syncMulti(multi);
+  });
+}
+
+function readState() {
+  const s = {};
+  $$('[data-k]').forEach(el => { s[el.dataset.k] = el.value.trim(); });
+  s.meds = $$('#medMulti input:checked').map(c => c.value);
+  s.afterClearance = $$('#clearMulti input:checked').map(c => c.value);
+  return s;
+}
+
+/* ---------- multi-select dropdown (Medication/Other) ---------- */
+function syncMulti(multi) {
+  const picked = $$('input:checked', multi).map(c => c.value);
+  const val = $('.multi-val', multi);
+  val.textContent = !picked.length ? 'Select'
+    : (multi.dataset.summary === 'count' && picked.length > 1) ? `${picked.length} selected`
+    : picked.join(', ');
+  val.classList.toggle('empty', !picked.length);
+}
+function closeMenus(except) {
+  $$('.multi').forEach(m => {
+    if (m === except) return;
+    $('.multi-menu', m).hidden = true;
+    $('.multi-btn', m).setAttribute('aria-expanded', 'false');
+    const card = m.closest('.card');
+    if (card) card.classList.remove('menu-open');
+  });
+}
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.multi-btn');
+  if (btn) {
+    const multi = btn.closest('.multi'), menu = $('.multi-menu', multi);
+    const open = menu.hidden;
+    closeMenus(multi);
+    menu.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    multi.closest('.card').classList.toggle('menu-open', open); // lift above the cards below
+    if (open) { const first = $('input', menu); if (first) first.focus(); }
+    return;
+  }
+  if (!e.target.closest('.multi-menu')) closeMenus();
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const open = $$('.multi').find(m => !$('.multi-menu', m).hidden);
+  if (open) { closeMenus(); $('.multi-btn', open).focus(); }
+});
+
+
+/* ============================================================
+   EMAIL TEMPLATE (Gmail-safe: tables + inline styles only)
+   ============================================================ */
+const F = "'Helvetica Neue',Helvetica,Arial,sans-serif";
+const C = {
+  navy: '#092e39', blue: '#8bcbdd', accent: '#2a8ea8', accentDark: '#1f7489', pill: '#e1f2f7',
+  ink: '#12303a', muted: '#5d7682', line: '#dcecf1', panel: '#f3f9fb', stat: '#eef7fa',
+  page: '#e3f0f5', card: '#fbfdfe', hl: '#dff1f6', hlLine: '#b9e1ec', danger: '#c62828'
+};
+
+function heading(text, right = '') {
+  return `<tr><td style="padding:28px 30px 10px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="4" style="width:4px;background-color:${C.blue};border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>
+<td style="padding-left:10px;font-family:${F};font-size:16px;line-height:20px;font-weight:700;color:${C.navy};">${esc(text)}</td>
+${right ? `<td align="right" style="padding-left:10px;font-family:${F};font-size:13px;line-height:20px;font-weight:700;color:${C.muted};white-space:nowrap;">${esc(right)}</td>` : ''}
+</tr></table></td></tr>`;
+}
+
+const spacer = h => `<tr><td style="height:${h}px;font-size:0;line-height:${h}px;">&nbsp;</td></tr>`;
+
+function panel(innerRows) {
+  return `<tr><td style="padding:0 30px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;background-color:${C.panel};border:1px solid ${C.line};border-radius:14px;box-shadow:inset 0 1px 0 #ffffff,0 4px 14px rgba(9,46,57,0.05);">${innerRows}</table>
+</td></tr>`;
+}
+
+function kvPanel(rows) {
+  const list = rows.filter(r => r[1] !== '' && r[1] != null);
+  if (!list.length) return '';
+  return panel(list.map(([k, v, raw, opt = {}], i) => {
+    const top = i ? `border-top:1px solid ${C.line};` : '';
+    const last = i === list.length - 1;
+    const bg = opt.bg ? `background-color:${opt.bg};` : '';
+    const rl = opt.bg && last ? 'border-radius:0 0 0 13px;' : '';
+    const rr = opt.bg && last ? 'border-radius:0 0 13px 0;' : '';
+    return `<tr>
+<td width="42%" valign="${opt.valign || 'top'}" style="padding:11px 16px;${top}${bg}${rl}font-family:${F};font-size:13px;line-height:19px;color:${opt.labelColor || C.muted};${opt.labelWeight ? `font-weight:${opt.labelWeight};` : ''}">${esc(k)}</td>
+<td valign="${opt.valign || 'top'}" style="padding:11px 16px;${top}${bg}${rr}font-family:${F};font-size:14px;line-height:20px;font-weight:600;color:${C.ink};">${raw ? v : esc(v)}</td>
+</tr>`;
+  }).join(''));
+}
+
+function statusPill(label) {
+  if (!label) return '';
+  const st = CONFIG.consultStatuses.find(x => x.label === label) || { bg: C.pill, fg: C.accentDark };
+  return `<span style="display:inline-block;padding:2px 10px;border-radius:999px;background-color:${st.bg};font-family:${F};font-size:13px;line-height:19px;font-weight:700;color:${st.fg};">${esc(label)}</span>`;
+}
+
+// Next step after medical clearance: light highlighted note under the call card
+function policyBlock() {
+  const P = CONFIG.policy;
+  const para = (html, i) => `<p style="margin:${i ? 14 : 0}px 0 0;font-family:${F};font-size:14px;line-height:22px;color:${C.ink};">${html}</p>`;
+  return `<tr><td style="padding:30px 30px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border-collapse:separate;background-color:#ffffff;border:1px solid ${C.line};border-top:4px solid ${C.blue};border-radius:16px;box-shadow:0 6px 18px rgba(9,46,57,0.06);">
+<tr><td style="padding:22px 24px 24px;">
+<div style="font-family:${F};font-size:17px;line-height:24px;font-weight:800;color:${C.navy};text-align:center;padding-bottom:16px;">${esc(P.title)}</div>
+${P.paragraphs.map(para).join('\n')}
+<p style="margin:14px 0 0;font-family:${F};font-size:14px;line-height:22px;font-weight:700;color:${C.navy};">${esc(P.signoff)}</p>
+</td></tr></table></td></tr>`;
+}
+
+function clearanceNote(list) {
+  if (!list || !list.length) return '';
+  const rows = list.map((t, i) => `<tr>
+<td valign="top" width="14" style="width:14px;padding:${i ? 8 : 0}px 0 0;font-family:${F};font-size:15px;line-height:22px;font-weight:800;color:${C.accent};">&bull;</td>
+<td valign="top" style="padding:${i ? 8 : 0}px 0 0;font-family:${F};font-size:15px;line-height:22px;font-weight:600;color:${C.navy};">${esc(t)}</td>
+</tr>`).join('');
+  return `${heading('Once you have been medically cleared')}
+<tr><td style="padding:0 30px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.hl}" style="border-collapse:separate;background-color:${C.hl};border:1px solid ${C.hlLine};border-radius:14px;box-shadow:inset 0 1px 0 #ffffff;">
+<tr><td style="padding:14px 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${rows}</table></td></tr>
+</table></td></tr>`;
+}
+
+function button(url, text, primary) {
+  const bg = primary ? C.blue : '#ffffff';
+  const style = primary
+    ? `background-color:${bg};background-image:linear-gradient(135deg,#a9dae8 0%,${C.blue} 100%);border:1px solid ${C.hlLine};box-shadow:0 8px 20px rgba(42,142,168,0.25);`
+    : `background-color:${bg};border:1.5px solid ${C.blue};`;
+  return `<tr><td align="center" style="padding:0 30px 12px;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+<td align="center" bgcolor="${bg}" style="${style}border-radius:12px;">
+<a href="${esc(url)}" target="_blank" style="display:inline-block;min-width:220px;padding:14px 26px;font-family:${F};font-size:15px;line-height:20px;font-weight:700;color:${C.navy};text-decoration:none;text-align:center;border-radius:12px;">${esc(text)}</a>
+</td></tr></table></td></tr>`;
+}
+
+// Call window: the key detail, shown as a dark card like the order Total bar
+function callCard(value) {
+  if (!value) return '';
+  return `<tr><td style="padding:0 30px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.navy}" style="border-collapse:separate;background-color:${C.navy};background-image:linear-gradient(135deg,#155063 0%,${C.navy} 70%);border-radius:14px;box-shadow:0 8px 20px rgba(9,46,57,0.2);">
+<tr><td align="center" style="padding:14px 20px;font-family:${F};color:#ffffff;text-align:center;">
+<div style="font-size:15px;line-height:21px;font-weight:600;">The provider will call you between</div>
+<div style="font-size:17px;line-height:24px;font-weight:800;padding-top:2px;">${esc(value)}</div>
+</td></tr></table></td></tr>`;
+}
+
+function signatureBlock(logoSrc) {
+  const S = CONFIG.signature;
+  const txt = (size, extra) => `font-family:${F};font-size:${size}px;line-height:${Math.round(size * 1.45)}px;${extra}`;
+  const a = (href, text, underline) => `<a href="${esc(href)}" target="_blank" style="color:${C.navy};text-decoration:${underline ? 'underline' : 'none'};">${esc(text)}</a>`;
+  const left = `<div style="width:100%;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="padding:8px 10px;">
+<img src="${esc(logoSrc)}" alt="EHCNYC Elite Health Center NYC" width="170" style="display:block;margin:0 auto;width:170px;max-width:170px;height:auto;border:0;outline:none;">
+<div style="${txt(13, 'font-weight:700;color:#3b4b52;padding-top:8px;')}">${esc(S.rating)} <span style="font-size:15px;letter-spacing:1px;color:#f5b301;">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
+<div style="${txt(13, `font-style:italic;color:#3b4b52;padding-top:10px;`)}">${S.address.map(esc).join('<br>')}</div>
+</td></tr></table>
+</div>`;
+  const line = content => `<div style="${txt(14, `color:${C.ink};padding-top:9px;`)}">${content}</div>`;
+  const right = `<div style="width:100%;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="padding:14px 10px 8px;text-align:center;">
+<div style="${txt(17, `font-weight:800;color:${C.navy};`)}">${esc(S.team)}</div>
+${S.hours.map(h => line(esc(h))).join('')}
+${line(`Phone/Text: ${a('tel:+1' + S.phone.replace(/\D/g, ''), S.phone, false)}`)}
+${line(a('mailto:' + S.email, S.email, true))}
+${line(a('https://' + S.website, S.website, true))}
+</td></tr></table>
+</div>`;
+  return `<tr><td style="padding:30px 30px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border-collapse:separate;background-color:#ffffff;border:1px solid ${C.line};border-radius:16px;box-shadow:0 6px 18px rgba(9,46,57,0.06);">
+<tr><td align="center" style="padding:18px 12px;text-align:center;">${left}${right}</td></tr>
+</table></td></tr>
+<tr><td style="padding:14px 30px 0;font-family:${F};font-size:10.5px;line-height:15px;color:#7b8f98;text-align:left;">
+<span style="font-weight:700;color:${C.muted};">CONFIDENTIALITY NOTICE:</span> ${esc(CONFIG.confidentiality)}
+</td></tr>`;
+}
+
+function introHtml(s) {
+  return (CONFIG.statusIntro[s.status] || CONFIG.defaultIntro).split('\n').map(t => esc(t)).join('<br>');
+}
+function confirmUrl(s) {
+  const R = CONFIG.confirmReply;
+  const name = s.name || 'Patient', date = s.consultDate ? fmtLongDate(s.consultDate) : 'my scheduled date';
+  const fill = t => t.replace(/\{name\}/g, () => name).replace(/\{date\}/g, () => date);
+  return 'mailto:' + CONFIG.signature.email + '?subject=' + encodeURIComponent(fill(R.subject)) + '&body=' + encodeURIComponent(fill(R.body));
+}
+// bold, full-width, solid navy button: the strongest contrast in the email
+function confirmBtn(s) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" bgcolor="${C.navy}" style="background-color:${C.navy};border-radius:14px;box-shadow:0 10px 24px rgba(9,46,57,0.3);">
+<a href="${esc(confirmUrl(s))}" target="_blank" style="display:block;padding:18px 20px;font-family:${F};font-size:17px;line-height:22px;font-weight:800;color:#ffffff;text-decoration:none;text-align:center;border-radius:14px;">&#10003;&nbsp; ${esc(CONFIG.confirmReply.button)}</a>
+</td></tr></table>`;
+}
+// "Action required" card, placed right under the greeting
+function confirmCard(s) {
+  const R = CONFIG.confirmReply;
+  return `<tr><td style="padding:22px 30px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e1f2f7" style="border-collapse:separate;background-color:#e1f2f7;border:1px solid #b7dbe8;border-left:5px solid ${C.navy};border-radius:14px;">
+<tr><td style="padding:16px 18px 0;font-family:${F};">
+<div style="font-size:11px;line-height:16px;font-weight:800;letter-spacing:1.2px;color:#d10f0f;">ACTION REQUIRED</div>
+<div style="font-size:17px;line-height:24px;font-weight:800;color:${C.navy};padding-top:2px;">${esc(R.title)}</div>
+</td></tr>
+<tr><td style="padding:14px 18px 8px;">${confirmBtn(s)}</td></tr>
+<tr><td style="padding:0 18px 18px;font-family:${F};font-size:13px;line-height:20px;color:${C.ink};">${esc(R.note)}</td></tr>
+</table></td></tr>`;
+}
+// same button repeated right after the policy, for anyone who scrolls to the end
+function confirmFoot(s) {
+  return `<tr><td style="padding:18px 30px 0;">${confirmBtn(s)}</td></tr>
+<tr><td align="center" style="padding:8px 30px 0;font-family:${F};font-size:12px;line-height:18px;color:${C.muted};">${esc(CONFIG.confirmReply.footNote)}</td></tr>`;
+}
+function buildEmailBody(s) {
+  const logoSrc = safeUrl(CONFIG.logoUrl) || CONFIG.logoData;
+  const logo = `<img src="${esc(logoSrc)}" alt="EHCNYC Elite Health Center NYC" width="140" style="display:block;width:140px;max-width:140px;height:auto;border:0;outline:none;text-decoration:none;">`;
+
+  // Balance due stands out (button-blue row) while the consultation is awaiting payment
+  const awaiting = s.status === CONFIG.awaitingPaymentStatus;
+  const balanceHtml = awaiting && s.balance
+    ? `<span style="font-size:13px;line-height:19px;font-weight:800;color:${C.navy};">${esc(s.balance)}</span>`
+    : '';
+  const balanceOpt = awaiting ? { bg: '#c4e5ef', labelColor: C.navy, labelWeight: 700, valign: 'middle' } : { valign: 'middle' };
+  const details = kvPanel([
+    ['Patient name', s.name],
+    ['Status', statusPill(s.status), true, { valign: 'middle' }],
+    ['Consultation date', fmtLongDate(s.consultDate)],
+    ['Provider', s.provider],
+    ['Medication/Other', s.meds.map(esc).join('<br>'), true],
+    ['Consultation fee (paid)', s.fee],
+    ['Balance due', balanceHtml, true, balanceOpt]
+  ]);
+  const payUrl = awaiting ? safeUrl(CONFIG.paymentLinks[s.balance]) : '';
+  const pay = payUrl ? spacer(16) + button(payUrl, 'Click here to remit payment', true) : '';
+  const call = s.callWindow ? spacer(12) + callCard(s.callWindow) : '';
+  const isConfirm = s.status === CONFIG.awaitingConfirmationStatus;
+  const confirmTop = isConfirm ? confirmCard(s) : '';
+  const confirmHtml = isConfirm ? confirmFoot(s) : '';
+  const comments = s.comments
+    ? heading('Comments') + panel(`<tr><td style="padding:14px 16px;font-family:${F};font-size:14px;line-height:21px;color:${C.ink};">${nl2br(s.comments)}</td></tr>`)
+    : '';
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.page}" style="background-color:${C.page};background-image:linear-gradient(160deg,#d3eaf2 0%,#eef6f9 45%,#d8e9ef 100%);">
+<tr><td align="center" style="padding:28px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;border-collapse:separate;background-color:${C.card};border:1px solid #ffffff;border-radius:20px;box-shadow:0 0 0 1px #cfe3ea,0 16px 40px rgba(9,46,57,0.12);">
+
+<tr><td bgcolor="#eef7fa" style="background-color:#eef7fa;background-image:linear-gradient(135deg,#ffffff 0%,#e2f2f7 100%);padding:24px 26px;border-radius:19px 19px 0 0;border-bottom:1px solid ${C.line};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td valign="middle">${logo}</td>
+<td align="right" valign="middle" style="padding-left:12px;">
+<div style="font-family:${F};font-size:20px;line-height:24px;font-weight:800;color:${C.navy};">Medical Consultation</div>
+<div style="font-family:${F};font-size:15px;line-height:21px;font-weight:700;color:${C.accent};padding-top:4px;">${esc(fmtDate(s.consultDate))}</div>
+</td>
+</tr></table>
+</td></tr>
+
+<tr><td style="padding:26px 30px 0;">
+<img src="${esc(safeUrl(CONFIG.heroUrl) || CONFIG.heroData)}" alt="" width="538" style="display:block;width:100%;max-width:538px;height:auto;border:0;outline:none;text-decoration:none;border-radius:14px;">
+</td></tr>
+
+<tr><td style="padding:22px 30px 0;font-family:${F};">
+<div style="font-size:18px;line-height:24px;font-weight:700;color:${C.ink};">Hi there,</div>
+<div style="font-size:15px;line-height:23px;color:${C.muted};padding-top:6px;">Thank you for choosing ${esc(CONFIG.clinicName)}!</div>
+<div style="font-size:15px;line-height:23px;font-style:italic;color:${C.accentDark};padding-top:2px;">${esc(CONFIG.tagline)}</div>
+<div style="font-size:15px;line-height:23px;color:${C.muted};padding-top:12px;">${introHtml(s)}</div>
+</td></tr>
+
+${heading('Consultation Status')}
+${details}
+${pay}
+${call}
+${confirmTop}
+${clearanceNote(s.afterClearance)}
+${comments}
+${policyBlock()}
+${confirmHtml}
+${signatureBlock(logoSrc)}
+
+<tr><td style="padding:22px 30px 0;"><div style="border-top:1px solid ${C.line};font-size:0;line-height:0;">&nbsp;</div></td></tr>
+<tr><td align="center" style="padding:16px 30px 28px;font-family:${F};font-size:12px;line-height:19px;color:${C.muted};">
+Questions about your consultation? Just reply to this email.<br>
+<span style="font-weight:700;color:${C.navy};">${esc(CONFIG.clinicName)}</span>
+</td></tr>
+
+</table>
+</td></tr>
+</table>`;
+}
+
+function buildEmailDoc(s) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>Medical Consultation | ${esc(CONFIG.clinicName)}</title>
+</head>
+<body style="margin:0;padding:0;background-color:${C.page};">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Your medical consultation with ${esc(CONFIG.clinicName)}${s.consultDate ? ' on ' + esc(fmtDate(s.consultDate)) : ''}.</div>
+${buildEmailBody(s)}
+</body>
+</html>`;
+}
+
+/* ---------- preview ---------- */
+const frame = $('#preview');
+let frameReady = false, raf = 0;
+frame.addEventListener('load', () => { frameReady = true; render(); });
+frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:${C.page};"></body></html>`;
+
+function render() {
+  cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(() => {
+    const s = readState();
+    $('#chipOrder').textContent = s.name || 'New consultation';
+    const awaiting = s.status === CONFIG.awaitingPaymentStatus;
+    $('#balanceField').hidden = !awaiting;
+    $('#medField').classList.toggle('span-2', awaiting);
+    $('#medField').classList.toggle('span-3', !awaiting);
+    if (!frameReady) return;
+    try { frame.contentDocument.body.innerHTML = buildEmailBody(s); }
+    catch { frame.srcdoc = buildEmailDoc(s); }
+  });
+}
+
+/* ---------- validation / copy / download ---------- */
+function validate() {
+  $$('.field.invalid').forEach(f => f.classList.remove('invalid'));
+  const miss = [];
+  [['name', 'patient name'], ['consultDate', 'consultation date'], ['provider', 'provider'], ['callWindow', 'call time window']]
+    .forEach(([k, label]) => {
+      const el = $(`[data-k=${k}]`);
+      if (!el.value.trim()) { el.closest('.field').classList.add('invalid'); miss.push(label); }
+    });
+  const balance = $('[data-k=balance]');
+  if ($('[data-k=status]').value === CONFIG.awaitingPaymentStatus && !balance.value) {
+    balance.closest('.field').classList.add('invalid');
+    miss.push('balance due (required when status is Awaiting payment)');
+  }
+  return miss;
+}
+
+function guard() {
+  const miss = validate();
+  if (!miss.length) return true;
+  toast('Add the ' + joinList(miss) + ' first', true);
+  const f = $('.field.invalid');
+  if (f) f.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return false;
+}
+
+function toPlain(html) {
+  const d = new DOMParser().parseFromString(html, 'text/html');
+  return d.body.textContent.replace(/[ \t]+/g, ' ').replace(/\s*\n\s*/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+async function copyRich(html) {
+  try {
+    if (!window.ClipboardItem || !navigator.clipboard || !navigator.clipboard.write) throw new Error('no api');
+    await navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([html], { type: 'text/html' }),
+      'text/plain': new Blob([toPlain(html)], { type: 'text/plain' })
+    })]);
+    return true;
+  } catch {
+    const box = document.createElement('div');
+    box.style.cssText = 'all:initial;position:fixed;left:-10000px;top:0;';
+    box.innerHTML = html;
+    document.body.appendChild(box);
+    const sel = getSelection(), range = document.createRange();
+    range.selectNodeContents(box);
+    sel.removeAllRanges(); sel.addRange(range);
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch {}
+    sel.removeAllRanges(); box.remove();
+    return ok;
+  }
+}
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;left:-10000px;top:0;';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch {}
+    ta.remove();
+    return ok;
+  }
+}
+
+let toastTimer;
+function toast(msg, bad = false) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.toggle('bad', bad);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3600);
+}
+
+$('#copyGmail').addEventListener('click', async () => {
+  if (!guard()) return;
+  const ok = await copyRich(buildEmailBody(readState()));
+  toast(ok ? 'Copied. Open Gmail, click Compose, and paste.' : 'Copy was blocked. Click inside the preview, press Ctrl+A, then Ctrl+C.', !ok);
+});
+
+$('#copyCode').addEventListener('click', async () => {
+  if (!guard()) return;
+  const ok = await copyText(buildEmailDoc(readState()));
+  toast(ok ? 'HTML code copied' : 'Copy was blocked. Use the download button instead.', !ok);
+});
+
+$('#download').addEventListener('click', () => {
+  if (!guard()) return;
+  const s = readState();
+  const name = [s.name, s.consultDate].filter(Boolean).join('_') || 'draft';
+  const blob = new Blob([buildEmailDoc(s)], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `medical-consultation-${name.replace(/[^\w-]+/g, '_')}.html`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  toast('Downloaded');
+});
+
+$('#reset').addEventListener('click', () => {
+  if (!confirm('Clear the form and start a new consultation?')) return;
+  applyDefaults();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  toast('Form cleared');
+});
+
+$$('.device button').forEach(b => b.addEventListener('click', () => {
+  $$('.device button').forEach(x => x.classList.toggle('on', x === b));
+  frame.style.width = b.dataset.w;
+}));
+
+/* ---------- live updates ---------- */
+const formCol = $('.form-col');
+formCol.addEventListener('input', e => {
+  const f = e.target.closest('.field');
+  if (f) f.classList.remove('invalid');
+  render();
+});
+formCol.addEventListener('change', e => {
+  const multi = e.target.closest('.multi');
+  if (multi) syncMulti(multi);
+  render();
+});
+
+/* ---------- init ---------- */
+$('.brand-logo').src = CONFIG.logoData;
+applyDefaults();
+render();
+</script>
+</body>
+</html>
